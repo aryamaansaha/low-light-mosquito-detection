@@ -1,11 +1,36 @@
-import matplotlib.pyplot as plt
-from torchvision.transforms.functional import to_pil_image
-import torch
 import os
+import torch
+from torchvision.transforms.functional import to_pil_image
+import matplotlib.pyplot as plt
 import numpy as np
 from torchvision.ops import box_iou
 from tqdm import tqdm
 import random
+
+
+def plot_losses(train_losses, val_losses, save_path=None):
+    """
+    Plot training and validation losses over epochs.
+
+    Args:
+        train_losses: List of training losses per epoch.
+        val_losses: List of validation losses per epoch.
+        save_path: Optional path to save the plot as an image.
+    """
+    plt.figure(figsize=(8, 5))
+    plt.plot(train_losses, label="Train Loss", marker="o")
+    plt.plot(val_losses, label="Validation Loss", marker="o")
+    plt.title("Train vs Validation Loss")
+    plt.xlabel("Epochs")
+    plt.ylabel("Loss")
+    plt.legend()
+    plt.grid(True)
+    
+    if save_path:
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        plt.savefig(os.path.join(save_path, "loss_plot.png"))
+        print(f"Loss plot saved to {save_path}")
+    plt.show()
 
 def plot_predictions(
     model, dataloader, device, randomize=True, num_samples=9, grid_size=(3, 3), confidence_threshold=0.5,
@@ -28,7 +53,6 @@ def plot_predictions(
     class_labels = ["background", 'aegypti', 'albopictus', 'anopheles', 'culex', 'culiseta', 'japonicus/koreicus']
     if save_folder:
         os.makedirs(save_folder, exist_ok=True)
-    model = model.to(device)
     model.eval()  # Set model to evaluation mode
 
     rows, cols = grid_size
@@ -112,8 +136,6 @@ def plot_predictions(
         plt.savefig(save_path, dpi=dpi, bbox_inches="tight")
         print(f"Plot saved at: {save_path}")
     plt.show()
-
-
 
 def calculate_f1_score(pred_boxes, pred_labels, pred_scores, true_boxes, true_labels, iou_threshold=0.5, score_threshold=0.5):
     """
@@ -241,7 +263,6 @@ def get_metrics(model, dataloader, device, iou_threshold=0.5, score_threshold=0.
     """
     model = model.to(device)
     model.eval()
-
     all_tp, all_fp, all_fn = 0, 0, 0
     all_aps = []
 
