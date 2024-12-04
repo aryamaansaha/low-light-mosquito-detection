@@ -19,6 +19,7 @@ def train(model, optimizer, scheduler, trainloader, valloader, device, N_epochs,
         save_name: Name of the best model to save.
     """
     os.makedirs(save_dir, exist_ok=True)  
+    model = model.to(device) 
     best_val_loss = float("inf")  # Track the best validation loss
     train_losses, val_losses, lr_history = [], [], []
 
@@ -55,9 +56,11 @@ def train(model, optimizer, scheduler, trainloader, valloader, device, N_epochs,
                 images = [img.to(device) for img in images]
                 targets = [{k: v.to(device) for k, v in t.items()} for t in targets]
 
-                # Forward pass
+                # Compute loss (requires switching back to train mode temporarily)
+                model.train()
                 loss_dict = model(images, targets)
                 losses = sum(loss for loss in loss_dict.values())
+                model.eval()  # Switch back to evaluation mode
 
                 val_loss += losses.item()
 
