@@ -7,6 +7,30 @@ from torchvision.ops import box_iou
 from tqdm import tqdm
 import random
 
+def plot_losses(train_losses, val_losses, save_path=None):
+    """
+    Plot training and validation losses over epochs.
+
+    Args:
+        train_losses: List of training losses per epoch.
+        val_losses: List of validation losses per epoch.
+        save_path: Optional path to save the plot as an image.
+    """
+    plt.figure(figsize=(8, 5))
+    plt.plot(train_losses, label="Train Loss", marker="o")
+    plt.plot(val_losses, label="Validation Loss", marker="o")
+    plt.title("Train vs Validation Loss")
+    plt.xlabel("Epochs")
+    plt.ylabel("Loss")
+    plt.legend()
+    plt.grid(True)
+    
+    if save_path:
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        plt.savefig(os.path.join(save_path, "loss_plot.png"))
+        print(f"Loss plot saved to {save_path}")
+    plt.show()
+
 def plot_predictions(
     model, dataloader, device, randomize=True, num_samples=9, grid_size=(3, 3), confidence_threshold=0.5,
     save_folder=None, dpi=300

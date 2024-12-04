@@ -1,3 +1,4 @@
 datasets/
 *.pth
 *.pt
+*.cache

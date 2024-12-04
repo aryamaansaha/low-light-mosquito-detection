@@ -1,0 +1,6 @@
+
+path: datasets/aug_il_dataset
+train: images/train
+val: images/val
+nc: 6  # Number of classes
+names: ['aegypti', 'albopictus', 'anopheles', 'culex', 'culiseta', 'japonicus/koreicus'] 
